@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo 'Welcome to Symfony-Docker!\n'
+echo 'Downloading Symfony Skeleton 6.1.99...\n'
+
+# Download Symfony Skeleton
+wget -P download https://github.com/symfony/skeleton/archive/refs/tags/v6.1.99.zip -O symfony.zip
+
+echo 'Unpacking Symfony\n'
+unzip symfony.zip -d ./
+mv skeleton-6.1.99/* ./
+
+# Cleaning up
+echo 'Cleaning up\n'
+rm symfony.zip && rm -rf skeleton-6.1.99
+echo 'Complete \n'

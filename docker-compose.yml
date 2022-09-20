@@ -1,0 +1,52 @@
+version: '3.6'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/images/app/Dockerfile
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/app
+    expose:
+      - "9000:9000"
+    networks:
+      - symfonyapp
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/images/web/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - type: bind
+        source: .
+        target: /var/www/app
+      - type: bind
+        source: ./docker/logs/nginx
+        target: /var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - symfonyapp
+  mysql:
+    build:
+      context: .
+      dockerfile: ./docker/images/database/Dockerfile
+    restart: always
+    volumes:
+      - type: bind
+        source: ./docker/data/mysql
+        target: /var/lib/mysql
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: secret
+    ports:
+      - "33066:3306"
+    networks:
+      - symfonyapp
+networks:
+  symfonyapp:
