@@ -56,6 +56,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->add($user, true);
     }
 
+    /**
+     * @param string $email
+     * @param string $handle
+     * @return int
+     */
+    public function countHandles(string $email, string $handle)
+    {
+        $result = $this->createQueryBuilder('u')
+            ->select('u.id')
+            ->where('u.email != :email')
+            ->andWhere('u.handle = :handle')
+            ->setParameters(['handle' => $handle, 'email' => $email])
+            ->getQuery()
+            ->getResult();
+
+        return count($result);
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
