@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+
+    <section>
+        <header class="mb-3">
+            <h1 class="h1">{{ title }}</h1>
+        </header>
+
+        <main>
+            <div class="row">
+                <div class="col-5">
+                    {% for message in app.flashes('success') %}
+                        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+                            <div id="liveToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header bg-success text-white">
+                                    <strong class="me-auto"><i class="bi bi-check"></i>&nbsp;Success</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    {{ message }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+                    {{ form_row(form.handle, {
+                        label: 'Account'
+                    }) }}
+                    {{ form_row(form.first_name) }}
+                    {{ form_row(form.last_name, {
+                        label: 'Last Name'
+                    }) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </main>
+    </section>
+
+{% endblock %}
