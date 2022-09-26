@@ -6,7 +6,9 @@ A complete Symfony, PHP Development environment that is very similar to producti
 Docker Compose based **Symfony development environment** with individual **App** _(Symfony app)_, **Nginx**, **Database** _(MySQL)_  services.
 
 ## Features
-Coming Soon
+ - Registration / Login
+ - Profile Info change
+ - Password Change
 
 ## Installation
 Coming soon.
