@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationExpiredException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -28,27 +29,33 @@ class AccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $managerRegistry->getManager();
-            $slugger = new AsciiSlugger();
 
-            $authUser = $this->getUser();
-            $userData = $form->getData();
+            $submittedToken = $request->get($form->getName())['_token'];
 
-            $user = $userRepository->findOneBy(['email' => $authUser->getEmail()]);
+            if ($this->isCsrfTokenValid('account-update', $submittedToken)) {
 
-            $user->setFirstName($userData->getFirstName());
-            $user->setLastName($userData->getLastName());
-            $user->setHandle($slugger->slug($userData->getHandle())->lower());
+                $em = $managerRegistry->getManager();
+                $slugger = new AsciiSlugger();
 
-            $em->persist($user);
-            $em->flush();
+                $authUser = $this->getUser();
+                $userData = $form->getData();
 
-            $this->addFlash(
-                'success',
-                'Your changes were saved!'
-            );
+                $user = $userRepository->findOneBy(['email' => $authUser->getEmail()]);
 
-            return $this->redirectToRoute('app_account');
+                $user->setFirstName($userData->getFirstName());
+                $user->setLastName($userData->getLastName());
+                $user->setHandle($slugger->slug($userData->getHandle())->lower());
+
+                $em->persist($user);
+                $em->flush();
+
+                $this->addFlash(
+                    'success',
+                    'Your changes were saved!'
+                );
+
+                return $this->redirectToRoute('app_account');
+            }
         }
 
         return $this->render('account/profile.html.twig', [
